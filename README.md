@@ -42,3 +42,8 @@ If you don't have a discord account follow this [link](https://discord.com). Cre
 
 
 ![Screenshot](1a.png)
+
+
+then choose '*create my own*', then choose '*for me and my family*' and finally give a name for your server. 
+
+Then create a Discord developer portal follow this [link](https://discord.com/developers/applications) then click on New Application as shown in image below:
