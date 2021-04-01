@@ -1,5 +1,4 @@
 import discord
-#from Bot.bot import ChatBot
 import nest_asyncio
 nest_asyncio.apply()
 
