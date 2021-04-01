@@ -47,3 +47,9 @@ If you don't have a discord account follow this [link](https://discord.com). Cre
 then choose '*create my own*', then choose '*for me and my family*' and finally give a name for your server. 
 
 Then create a Discord developer portal follow this [link](https://discord.com/developers/applications) then click on New Application as shown in image below:
+
+
+![Screenshot](2a.png)
+
+
+Once you gave a name of your choice to your application on the left side click on '*Bot*' and then click to add a bot: 
