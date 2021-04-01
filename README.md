@@ -48,11 +48,16 @@ then choose '*create my own*', then choose '*for me and my family*' and finally 
 
 Then create a Discord developer portal follow this [link](https://discord.com/developers/applications) then click on New Application as shown in image below:
 
-
-![Screenshot](2a.png)
-
-
 Once you gave a name of your choice to your application on the left side click on '*Bot*' and then click to add a bot: 
 
 
 ![Screenshot](3a.png)
+
+
+Now it's time to add your bot to your server. In this link https://discord.com/oauth2/authorize?client_id=CLIENT_ID&scope=bot&permissions=0 insert your bot's client id to where it says '*client_id = CLIENT*'. Choose '*General Information*' from the left pannel, copy your client id (as shown in image below) and add it instead of CLIENT. 
+
+![Screenshot](4a.png)
+
+
+
+
