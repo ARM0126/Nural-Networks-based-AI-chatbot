@@ -66,4 +66,4 @@ Similarly copy your bot's token number, by choosing '*Bot*' from left panel and 
 Once you reached this step, open main_app.py and run it, (be sure to follow step 2 to install necessary libraries). The file main_app.py will take some time to train the Nural Network depending on the number of epochs that you assigned. Eventually run discord_connect.py to activate the bot in your given server. The file discord_connect.py will be running unless you abort your command line in google colab environment. Enjoy chatting with your new AI chat bot. :) 
 
 
-![Screenshot](3a.png)
+![Screenshot](5a.png)
