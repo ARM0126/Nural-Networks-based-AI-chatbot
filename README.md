@@ -53,3 +53,6 @@ Then create a Discord developer portal follow this [link](https://discord.com/de
 
 
 Once you gave a name of your choice to your application on the left side click on '*Bot*' and then click to add a bot: 
+
+
+![Screenshot](3a.png)
