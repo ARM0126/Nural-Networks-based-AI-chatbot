@@ -2,100 +2,122 @@ import nltk
 from nltk.stem.lancaster import LancasterStemmer
 stemmer = LancasterStemmer()
 
-import numpy as np
+import numpy
 import tflearn
-import tensorflow as tf
-# import tensorflow.compat.v1 as tf #use this if you get an an attribute error for the version of TensorFlow (AttributeError: module 'tensorflow' has no attribute 'reset_default_graph') 
-
+import tensorflow as tf     # import tensorflow.compat.v1 as tf #use this if you get an an attribute error for the version of TensorFlow (AttributeError: module 'tensorflow' has no attribute 'reset_default_graph') 
 import random
 import json
 import pickle
 
-
 nltk.download('punkt')
 nltk.download('wordnet')
 
-with open("intents.json") as file:
-    data = json.load(file)
 
-# print(data)
+class ChatBot(object):
+  with open("intents.json") as file:
+      data = json.load(file)
 
-try:
-  x
-  with open("data.pickle","rb") as f:
-    words, labels, training, output = pickle.load(f)
-except:
-  words = []
-  labels = []
-  docs_x = []
-  docs_y = []
-  #stemming takes each word to root word
-  for intent in data["intents"]:
-      for pattern in intent["patterns"]:
-          wrds = nltk.word_tokenize(pattern)
-          words.extend(wrds)
-          docs_x.append(pattern)
-          docs_y.append(intent["tag"])
+  try:
+      with open("data.pickle", "rb") as f:
+          words, labels, training, output = pickle.load(f)
+  except:
+      words = []
+      labels = []
+      docs_x = []
+      docs_y = []
 
-      if intent["tag"] not in labels:
-          labels.append(intent["tag"])
+      for intent in data["intents"]:
+          for pattern in intent["patterns"]:
+              wrds = nltk.word_tokenize(pattern)
+              words.extend(wrds)
+              docs_x.append(wrds)
+              docs_y.append(intent["tag"])
 
-  words = [stemmer.stem(w.lower()) for w in words if w != "?"]
-  words = sorted(list(set(words)))
+          if intent["tag"] not in labels:
+              labels.append(intent["tag"])
 
-  labels = sorted(labels)
+      words = [stemmer.stem(w.lower()) for w in words if w != "?"]
+      words = sorted(list(set(words)))
 
-  training = []
-  output = []
+      labels = sorted(labels)
 
-  out_empty = [0 for _ in range(len(labels))]
+      training = []
+      output = []
 
-  for x, doc in enumerate(docs_x):
-      bag = []
+      out_empty = [0 for _ in range(len(labels))]
 
-      wrds = [stemmer.stem(w) for w in doc]
+      for x, doc in enumerate(docs_x):
+          bag = []
 
-      for w in words:
-          if w in wrds:
-              bag.append(1)
-          else:
-              bag.append(0)
+          wrds = [stemmer.stem(w.lower()) for w in doc]
 
-      output_row = out_empty[:]
-      output_row[labels.index(docs_y[x])] = 1
+          for w in words:
+              if w in wrds:
+                  bag.append(1)
+              else:
+                  bag.append(0)
 
-      training.append(bag)
-      output.append(output_row)
+          output_row = out_empty[:]
+          output_row[labels.index(docs_y[x])] = 1
 
+          training.append(bag)
+          output.append(output_row)
 
 
-      #training = np.array(output)
+      training = numpy.array(training)
+      output = numpy.array(output)
 
-  training = np.array(training)
-  output = np.array(output)
+      with open("data.pickle", "wb") as f:
+          pickle.dump((words, labels, training, output), f)
 
-  with open("data.pickle","wb") as f:
-    pickle.dump((words, labels, training, output),f)
+  # tensorflow.compat.v1.reset_default_graph()
+  tf.compat.v1.reset_default_graph()
 
-#tensorflow.reset_default_graph()
+  net = tflearn.input_data(shape=[None, len(training[0])])
+  net = tflearn.fully_connected(net, 8)
+  net = tflearn.fully_connected(net, 8)
+  net = tflearn.fully_connected(net, len(output[0]), activation="softmax")
+  net = tflearn.regression(net)
 
-#tf.reset_default_graph()    # if you import tensorflow.compat.v1 as tf
+  model = tflearn.DNN(net)
 
-#tensorflow.compat.v1.reset_default_graph() # if you dont import it as compat.v1 use this source https://stackoverflow.com/questions/40782271/attributeerror-module-tensorflow-has-no-attribute-reset-default-graph/40782339
+  try:
+      tflearn.DNN(net).load("model.tflearn")
+  except:
+      tflearn.DNN(net).fit(training, output, n_epoch=1000, batch_size=8, show_metric=True)
+      tflearn.DNN(net).save("model.tflearn")
 
-tf.reset_default_graph()
+  @classmethod
+  def bag_of_words(self, s, words):
+      bag = [0 for _ in range(len(words))]
 
-net = tflearn.input_data(shape=[None, len(training[0])])
-net = tflearn.fully_connected(net, 8)
-net = tflearn.fully_connected(net, 8)
-net = tflearn.fully_connected(net, len(output[0]), activation="softmax")
-net = tflearn.regression(net)
+      s_words = nltk.word_tokenize(s)
+      s_words = [stemmer.stem(word.lower()) for word in s_words]
 
-model = tflearn.DNN(net)
+      for se in s_words:
+          for i, w in enumerate(words):
+              if w == se:
+                  bag[i] = 1
+              
+      return numpy.array(bag)
+
+  @classmethod
+  def chat(sel):
+      print("Start talking with the bot (type quit to stop)!")
+      while True:
+          inp = input("You: ")
+          if inp.lower() == "quit":
+              break
+
+          results = tflearn.DNN(net).predict([ChatBot.bag_of_words(inp, words)])
+          results_index = numpy.argmax(results)
+          tag = labels[results_index]
 
 
-try:
-  model.load("model.tflearn")
-except:
-  tflearn.DNN(net).fit(training, output, n_epoch=1000, batch_size=8, show_metric=True)
-  tflearn.DNN(net).save("model.tflearn")
+          for tg in data["intents"]:
+              if tg['tag'] == tag:
+                  responses = tg['responses']
+
+          print(random.choice(responses))
+
+ChatBot.chat()
