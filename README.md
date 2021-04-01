@@ -54,10 +54,16 @@ Once you gave a name of your choice to your application on the left side click o
 ![Screenshot](3a.png)
 
 
-Now it's time to add your bot to your server. In this link https://discord.com/oauth2/authorize?client_id=CLIENT_ID&scope=bot&permissions=0 insert your bot's client id to where it says '*client_id = CLIENT*'. Choose '*General Information*' from the left pannel, copy your client id (as shown in image below) and add it instead of CLIENT. 
+Now it's time to add your bot to your server. In this link https://discord.com/oauth2/authorize?client_id=CLIENT_ID&scope=bot&permissions=0 insert your bot's client id to where it says '*client_id = CLIENT*'. Choose '*OAuth2*' from the left pannel, copy your client id (as shown in image below) and add it instead of CLIENT. 
 
 ![Screenshot](4a.png)
 
+Similarly copy your bot's token number, by choosing '*Bot*' from left panel and copying client ID, save it to a text file, and upload it to your google colab environment. 
 
 
+## 5- Running main_app.py and discord_connect.py:
 
+Once you reached this step, open main_app.py and run it, (be sure to follow step 2 to install necessary libraries). The file main_app.py will take some time to train the Nural Network depending on the number of epochs that you assigned. Eventually run discord_connect.py to activate the bot in your given server. The file discord_connect.py will be running unless you abort your command line in google colab environment. Enjoy chatting with your new AI chat bot. :) 
+
+
+![Screenshot](3a.png)
